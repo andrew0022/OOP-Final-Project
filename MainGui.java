@@ -17,7 +17,7 @@ public class MainGUI extends JFrame {
         addExerciseButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new AddExercise();
+                new ExerciseTrackerGUI();
             }
         });
 
