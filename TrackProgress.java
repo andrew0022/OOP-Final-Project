@@ -16,29 +16,33 @@ public class TrackProgress {
     private boolean benchDone;
     private boolean squatDone;
     private boolean deadliftDone;
+    private boolean fileReadSuccessfully = false;
 
     public TrackProgress() {
         String inputFilePath = "exercises.txt";
         String outputFilePath = "trackedworkouts.txt";
         readFile(inputFilePath, outputFilePath);
-        showPopup();
+        if (fileReadSuccessfully) {
+            showPopup();
+        }
     }
 
     private void readFile(String inputFilePath, String outputFilePath) {
         try (BufferedReader br = new BufferedReader(new FileReader(inputFilePath));
                 BufferedWriter bw = new BufferedWriter(new FileWriter(outputFilePath))) {
 
-            String line;
+            String line = br.readLine();
+            if (line == null) {
+                showEmptyFilePopup();
+                return;
+            }
+
             int workoutNumber = 0;
-            double maxBench = 0;
-            double maxSquat = 0;
-            double maxDeadlift = 0;
-            benchDone = false;
-            squatDone = false;
-            deadliftDone = false;
+            double maxBench = 0, maxSquat = 0, maxDeadlift = 0;
+            benchDone = squatDone = deadliftDone = false;
             String currentExercise = "";
 
-            while ((line = br.readLine()) != null) {
+            do {
                 String lowerCaseLine = line.toLowerCase();
                 if (lowerCaseLine.contains("=== new workout session ===")) {
                     if (workoutNumber > 0) {
@@ -70,9 +74,14 @@ public class TrackProgress {
                         maxDeadlift = Math.max(maxDeadlift, weight);
                     }
                 }
+            } while ((line = br.readLine()) != null);
+
+            if (workoutNumber > 0) {
+                printMaxWeights(workoutNumber, maxBench, maxSquat, maxDeadlift, bw);
+                printAnalysis(maxBench, maxSquat, maxDeadlift, bw);
             }
-            printMaxWeights(workoutNumber, maxBench, maxSquat, maxDeadlift, bw);
-            printAnalysis(maxBench, maxSquat, maxDeadlift, bw);
+
+            fileReadSuccessfully = true;
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -119,15 +128,29 @@ public class TrackProgress {
         previousMaxDeadlift = maxDeadlift;
     }
 
-    private static void showPopup() {
+    private void showPopup() {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-
                 JFrame frame = new JFrame("Progress Report");
                 frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
                 frame.setSize(300, 100);
 
                 JLabel label = new JLabel("View progress report in trackedworkouts.txt", JLabel.CENTER);
+                frame.getContentPane().add(label);
+                frame.setLocationRelativeTo(null);
+                frame.setVisible(true);
+            }
+        });
+    }
+
+    private void showEmptyFilePopup() {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                JFrame frame = new JFrame("Empty File");
+                frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+                frame.setSize(300, 100);
+
+                JLabel label = new JLabel("Please enter a workout first", JLabel.CENTER);
                 frame.getContentPane().add(label);
                 frame.setLocationRelativeTo(null);
                 frame.setVisible(true);

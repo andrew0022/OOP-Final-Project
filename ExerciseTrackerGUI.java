@@ -132,9 +132,16 @@ public class ExerciseTrackerGUI {
         frame.add(addExerciseButton, BorderLayout.NORTH);
         frame.add(new JScrollPane(exercisesPanel), BorderLayout.CENTER);
         frame.add(saveButton, BorderLayout.SOUTH);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.pack();
+
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int x = (screenSize.width - frame.getWidth()) / 2;
+        int y = (screenSize.height - frame.getHeight()) / 2;
+        frame.setLocation(x, y);
+
         frame.setVisible(true);
+
     }
 
     private void createExerciseComponents(Exercise exercise, JPanel exercisesPanel) {
