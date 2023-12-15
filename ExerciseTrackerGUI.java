@@ -94,27 +94,29 @@ public class ExerciseTrackerGUI {
         exercisesPanel.setLayout(new BoxLayout(exercisesPanel, BoxLayout.Y_AXIS));
 
         String exerciseName = JOptionPane.showInputDialog(frame, "Enter the exercise name:");
-        if (exerciseName == null || exerciseName.isEmpty()) {
-            exerciseName = "Unnamed Exercise";
+
+        if (exerciseName == null) {
+            frame.dispose();
+            return;
         }
 
-        Exercise initialExercise = new Exercise(exerciseName);
-        exercises.add(initialExercise);
-        createExerciseComponents(initialExercise, exercisesPanel);
+        if (exerciseName != null && !exerciseName.isEmpty()) {
+            Exercise initialExercise = new Exercise(exerciseName);
+            exercises.add(initialExercise);
+            createExerciseComponents(initialExercise, exercisesPanel);
+        }
 
         JButton addExerciseButton = new JButton("Add New Exercise");
         addExerciseButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String newExerciseName = JOptionPane.showInputDialog(frame, "Enter the exercise name:");
-                if (newExerciseName == null || newExerciseName.isEmpty()) {
-                    newExerciseName = "Unnamed Exercise";
+                if (newExerciseName != null && !newExerciseName.isEmpty()) {
+                    Exercise newExercise = new Exercise(newExerciseName);
+                    exercises.add(newExercise);
+                    createExerciseComponents(newExercise, exercisesPanel);
+                    frame.pack();
                 }
-
-                Exercise newExercise = new Exercise(newExerciseName);
-                exercises.add(newExercise);
-                createExerciseComponents(newExercise, exercisesPanel);
-                frame.pack();
             }
         });
 
@@ -130,7 +132,6 @@ public class ExerciseTrackerGUI {
         frame.add(addExerciseButton, BorderLayout.NORTH);
         frame.add(new JScrollPane(exercisesPanel), BorderLayout.CENTER);
         frame.add(saveButton, BorderLayout.SOUTH);
-
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
@@ -176,7 +177,7 @@ public class ExerciseTrackerGUI {
         JTextField weightField = new JTextField(5);
         JTextField repsField = new JTextField(5);
 
-        // Add a FocusListener to update weight
+        // make sure values typed in are auto saved
         weightField.addFocusListener(new FocusAdapter() {
             public void focusLost(FocusEvent e) {
                 try {
@@ -188,7 +189,6 @@ public class ExerciseTrackerGUI {
             }
         });
 
-        // Add a FocusListener to update reps
         repsField.addFocusListener(new FocusAdapter() {
             public void focusLost(FocusEvent e) {
                 try {
@@ -205,8 +205,8 @@ public class ExerciseTrackerGUI {
         setPanel.add(weightField);
         setPanel.add(new JLabel("Reps:"));
         setPanel.add(repsField);
-
         exercisePanel.add(setPanel);
+
     }
 
     private void saveExercises() {
@@ -228,8 +228,4 @@ public class ExerciseTrackerGUI {
             JOptionPane.showMessageDialog(frame, "Error saving exercises", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-
-    // public static void main(String[] args) {
-    // SwingUtilities.invokeLater(() -> new ExerciseTrackerGUI());
-    // }
 }
