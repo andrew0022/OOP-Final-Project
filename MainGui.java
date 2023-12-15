@@ -7,7 +7,7 @@ public class MainGUI extends JFrame {
     public MainGUI() {
         setTitle("Main Menu");
         setSize(300, 200);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
 
         JButton addExerciseButton = new JButton("Add Exercise");
@@ -17,7 +17,7 @@ public class MainGUI extends JFrame {
         addExerciseButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new AddExercise();
+                new ExerciseTrackerGUI();
             }
         });
 
